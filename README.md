@@ -1,5 +1,6 @@
 ## Análises de ancestralidade global e local para caracterização de zonas híbridas
 
+
 ### Backgroud teórico
 
 **Zona híbrida**:
@@ -14,6 +15,7 @@ Em um cenário onde indivíduos de duas linhagens diferentes (vamos chamar aqui 
 
 Com genomas completos, temos algumas possibilidades de caracterizar de forma bem refinada a dinâmica genômica de miscigenação. O que chamaremos aqui de ancestralidade global é a proporção geral, em determinado indivíduo de uma população, do genoma vindo de cada ancestral. Por exemplo, o indivíduo F1 comentado anteriormente terá uma proporção de ancestralidade global de 0,5/0,5. Esse tipo de informação pode ser inferida mesmo com marcadores moleculares clássicos. Mas, com genomas completos, ela se torna mais robusta, mais realista, e sem potenciais viéses de introgressão diferencial. Por outro lado a ancestralidade local só pode ser inferida a partir de genomas completos, visto que ela consegue apresentar, ao longo do genoma de determinado indivíduo, quais segmentos são originais de uma ou outra linhagem ancestral. Com esse tipo de abordagem é possível encontrar regiões adaptativas, datar há quantas gerações a miscigenação está ocorrendo e observar de forma bastante detalhada a dinâmica de mistura genômica.
 
+
 ### Exemplo prático
 
 **Dados usados na demonstração**:
@@ -25,11 +27,12 @@ Cromossomo A1, sequenciados à baixa cobertura, de ~60 indivíduos amostrados em
 - *Processamento inicial*: Filtragem das reads ([fastp](https://github.com/OpenGene/fastp))> mapeamento contra a referência ([BWA](https://bio-bwa.sourceforge.net/bwa.shtml), [Samtools](http://www.htslib.org/doc/samtools.html)) >  filtros de mapeamento (Samtools).
 - *Genotype likelihoods*: mapeamento todos indivíduos > maf e genótipo “estimado” ([ANGSD](http://www.popgen.dk/angsd/index.php/ANGSD))
 - *SNP calling*: mapeamento todos indivíduos > haplotype calling ([GATK](https://gatk.broadinstitute.org/hc/en-us)) > filtragem cobertura, qualidade, SNP (vcftools, bcftools)
+Um exemplo simples de como fazer esses processos pode ser encontrado [aqui](https://github.com/ffertrindade/EvolGenomics/tree/dev/working/3-2%20Population%20Genomics).
 
 **Análise de ancestralidade global:**
 
 Software:
-- NGSadmix [software](http://www.popgen.dk/software/index.php/NgsAdmix) e [artigo](https://academic.oup.com/genetics/article/195/3/693/5935455)
+- NGSadmix [software](http://www.popgen.dk/software/index.php/NgsAdmix) e [artigo](https://academic.oup.com/genetics/article/195/3/693/5935455).
 
 Arquivos iniciais e scripts:
 
@@ -56,13 +59,13 @@ Arquivos gerados:
 
 Software:
 
-- Ancestry_HMM [software](https://github.com/russcd/Ancestry_HMM) e [artigo](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1006529)
+- Ancestry_HMM [software](https://github.com/russcd/Ancestry_HMM) e [artigo](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1006529).
 
 Arquivos iniciais e scripts:
 
 - *leopardus_63ind.chrA1.filtered.vcf*: arquivo VCF filtrado com todos os indivíduos do transecto (híbridos e não híbridos).
 - *popNames.txt*: arquivo de texto com indicação de quais indivíduos pertencem a cada população (ex. parental 1, parental 2 e híbridos).
-- *vcf2aHMM.py*: script para criar arquivo de entrada para rodar o program Ancestry_HMM.
+- [*vcf2aHMM.py*](https://github.com/russcd/Ancestry_HMM/tree/master/scripts): script para criar arquivo de entrada para rodar o program Ancestry_HMM.
 - *samplesPloidy.txt*: lista dos indivíduos a serem avaliados quanto à ancestralidade local (no caso, os híbridos, mas é possível testar com alguns indivíduos das linhagens ancestrais) seguido da ploidia; será usado como arquivo de entrada do Ancestry_HMM.
 - *chr.txt*: lista dos cromossomos sendo usados.
 - *getAvrLAI.py*: script para preparar arquivos para plotar resultado de posterior e calcular as proporções médias de ancestralidade local.
@@ -72,8 +75,9 @@ Comandos:
 
 - Criando painel:
 ```
-$python3 vcf2aHMM.py --vcf leopardus_63ind.chrA1.filtered.vcf --pop popNames.txt --rate 1.9 --minGT 0.2 > leopardus_63ind.popNames_parentals.minGT02.panel
-
+python3 vcf2aHMM.py --vcf leopardus_63ind.chrA1.filtered.vcf --pop popNames.txt --rate 1.9 --minGT 0.2 > leopardus_63ind.popNames_parentals.minGT02.panel
+```
+```
 usage: vcf2aHMM.py [-h] [--vcf VCF] [--map MAP] [--pop POP] [--rate RATE] [--dist DIST] [--minDif MINDIF] [--minGT MINGT] [--minDP MINDP] [-geno]
 
 Read in files and paremeters
@@ -93,8 +97,9 @@ optional arguments:
 
 - Rodando Ancestry_HMM:
 ```
-$ancestry_hmm -i leopardus_63ind.popNames_parentals.minGT02.panel -s samplesPloidy.txt -a 2 0.5 0.5 -p 0 10000 0.5 -p 1 -1 0.5 --ne 10000 -e 1e-3 1> leopardus_63ind.popNames_parentals.minGT02.out 2> leopardus_63ind.popNames_parentals.minGT02.err
-
+ancestry_hmm -i leopardus_63ind.popNames_parentals.minGT02.panel -s samplesPloidy.txt -a 2 0.5 0.5 -p 0 10000 0.5 -p 1 -1 0.5 --ne 10000 -e 1e-3 1> leopardus_63ind.popNames_parentals.minGT02.out 2> leopardus_63ind.popNames_parentals.minGT02.err
+```
+```
 ancestry_hmm usage:
 
         required:
