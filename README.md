@@ -25,8 +25,9 @@ Cromossomo A1, sequenciados à baixa cobertura, de ~60 indivíduos amostrados em
 **Pipeline de preparação dos dados (não detalhado)**:
 
 - *Processamento inicial*: Filtragem das reads ([fastp](https://github.com/OpenGene/fastp))> mapeamento contra a referência ([BWA](https://bio-bwa.sourceforge.net/bwa.shtml), [Samtools](http://www.htslib.org/doc/samtools.html)) >  filtros de mapeamento (Samtools).
-- *Genotype likelihoods*: mapeamento todos indivíduos > maf e genótipo “estimado” ([ANGSD](http://www.popgen.dk/angsd/index.php/ANGSD))
-- *SNP calling*: mapeamento todos indivíduos > haplotype calling ([GATK](https://gatk.broadinstitute.org/hc/en-us)) > filtragem cobertura, qualidade, SNP (vcftools, bcftools)
+- *Genotype likelihoods*: mapeamento todos indivíduos > maf e genótipo “estimado” ([ANGSD](http://www.popgen.dk/angsd/index.php/ANGSD)).
+- *SNP calling*: mapeamento todos indivíduos > haplotype calling ([GATK](https://gatk.broadinstitute.org/hc/en-us)) > filtragem cobertura, qualidade, SNP (vcftools, bcftools).
+
 Um exemplo simples de como fazer esses processos pode ser encontrado [aqui](https://github.com/ffertrindade/EvolGenomics/tree/dev/working/3-2%20Population%20Genomics).
 
 **Análise de ancestralidade global:**
@@ -139,7 +140,7 @@ python getAvrLAI.py bLge-251 ~/aHMM/genotropics/parentals.minGT02/ chr.file
 Rscript plotLocalAncestry.R bLge-251 ~/aHMM/genotropics/parentals.minGT02/
 ```
 
-Arquivos gerados*:*
+Arquivos gerados:
 
 - *leopardus_63ind.popNames_parentals.minGT02.panel*: painel gerado pelo script vcf2aHMM.py, usando os arquivos samples.vcf e popNames.txt, queue será usado como arquivo de entrada do Ancestry_HMM.
 - *sample***.posterior*: prob. posterior para determinada posição do genoma, do indivíduo sendo analisado, ser de cada linhagem ancestral.
